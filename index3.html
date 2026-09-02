@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery Walk - Top 3 Projetos</title>
+    <style>
+        /* ================= CSS (Estilos Eletromidia) ================= */
+        :root {
+            --bg-dark: #121212; --bg-card: #242424; --orange: #FF6600; 
+            --text-light: #FFFFFF; --text-gray: #B3B3B3;
+            --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32;
+            --success: #4CAF50; --error: #FF3333;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-light); display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 480px; min-height: 100vh; padding: 20px; padding-bottom: 40px; }
+        
+        h1, h2 { color: var(--orange); margin-bottom: 15px; text-align: center; }
+        p { color: var(--text-gray); margin-bottom: 20px; text-align: center; font-size: 14px; }
+        
+        input[type="text"] { 
+            width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #333; 
+            border-radius: 8px; background-color: #1a1a1a; color: var(--text-light); font-size: 15px; 
+        }
+        input:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 8px rgba(255, 102, 0, 0.3); }
+        
+        select { 
+            width: 100%; padding: 16px; margin-bottom: 15px; 
+            border: 2px solid #333; border-radius: 10px; 
+            background-color: #1a1a1a; color: var(--text-light); 
+            font-size: 15px; cursor: pointer; transition: 0.3s;
+            appearance: none;
+        }
+        select:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 10px rgba(255, 102, 0, 0.2); }
+        
+        .select-wrapper { position: relative; }
+        .select-wrapper::after {
+            content: "▼"; font-size: 12px; color: var(--orange); 
+            position: absolute; right: 18px; top: 50%; transform: translateY(-75%); 
+            pointer-events: none; transition: 0.3s;
+        }
+
+        .btn { width: 100%; padding: 16px; border: none; border-radius: 8px; background-color: var(--orange); color: white; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; text-align: center; display: block; text-decoration: none; }
+        .btn:active { transform: scale(0.98); }
+        .btn:disabled { background-color: #333; color: #666; cursor: not-allowed; }
+        .btn-success { background-color: var(--success); }
+        
+        .btn-disabled-link { pointer-events: none; background-color: #2a2a2a; color: #777; border: 1px solid #333; }
+
+        .screen { display: none; animation: fadeIn 0.4s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .panel-section { background-color: var(--bg-card); padding: 25px 20px; border-radius: 12px; border: 1px solid #333; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .podium-label { font-weight: bold; margin-bottom: 8px; display: block; font-size: 14px; }
+        .label-gold { color: var(--gold); }
+        .label-silver { color: var(--silver); }
+        .label-bronze { color: var(--bronze); }
+        
+        .error-msg { color: var(--error); font-size: 13px; text-align: center; margin-bottom: 15px; display: none; font-weight: bold; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); display: none; justify-content: center; align-items: center; padding: 20px; z-index: 1000; }
+        .modal-overlay.active { display: flex; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- TELA 1: IDENTIFICAÇÃO -->
+        <div id="screen-login" class="screen active">
+            <h1>Gallery Walk</h1>
+            <p>Identifique-se para acessar os projetos e votar.</p>
+            <input type="text" id="userName" placeholder="Seu Nome Completo" required>
+            <input type="text" id="userRole" placeholder="Seu Cargo" required>
+            <button class="btn" onclick="startApp()">Prosseguir</button>
+        </div>
+
+        <!-- TELA 2: VOTAÇÃO E CONSULTA -->
+        <div id="screen-projects" class="screen">
+            <h2>Portal Gallery Walk</h2>
+            <p>Consulte as apresentações e monte seu Pódio.</p>
+
+            <!-- CONSULTA DE APRESENTAÇÕES -->
+            <div class="panel-section">
+                <h3 style="color: var(--text-light); margin-bottom: 15px; font-size: 16px; border-bottom: 1px solid #444; padding-bottom: 10px;">📄 Acessar Apresentações</h3>
+                <div class="select-wrapper">
+                    <select id="viewer-select" onchange="updateViewerLink()">
+                        <option value="">Escolha um projeto da lista...</option>
+                    </select>
+                </div>
+                <a id="btn-viewer" href="#" target="_blank" class="btn btn-disabled-link">Escolha um projeto acima</a>
+            </div>
+            
+            <!-- PAINEL DE VOTAÇÃO (PÓDIO) -->
+            <div class="panel-section">
+                <h3 style="color: var(--text-light); margin-bottom: 15px; font-size: 16px; border-bottom: 1px solid #444; padding-bottom: 10px;">🏆 Seu Top 3</h3>
+                
+                <label class="podium-label label-gold">🥇 1º Lugar</label>
+                <div class="select-wrapper">
+                    <select id="rank1" onchange="validateVotes()">
+                        <option value="">Selecione o melhor projeto...</option>
+                    </select>
+                </div>
+
+                <label class="podium-label label-silver">🥈 2º Lugar</label>
+                <div class="select-wrapper">
+                    <select id="rank2" onchange="validateVotes()">
+                        <option value="">Selecione o segundo projeto...</option>
+                    </select>
+                </div>
+
+                <label class="podium-label label-bronze">🥉 3º Lugar</label>
+                <div class="select-wrapper">
+                    <select id="rank3" onchange="validateVotes()">
+                        <option value="">Selecione o terceiro projeto...</option>
+                    </select>
+                </div>
+
+                <div id="error-message" class="error-msg">⚠️ Você escolheu o mesmo projeto mais de uma vez.</div>
+                
+                <button id="btn-submit" class="btn" disabled onclick="submitFinalVotes()" style="margin-top: 10px;">Enviar Votos</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA FINAL -->
+    <div id="screen-thanks" class="modal-overlay">
+        <div style="text-align: center; padding: 20px;">
+            <h1 style="color: var(--success); font-size: 50px; margin-bottom: 10px;">✔</h1>
+            <h2 style="color: white;">Votos Computados!</h2>
+            <p>Seu Top 3 foi enviado com sucesso.</p>
+        </div>
+    </div>
+
+    <script>
+        /* URL DE INTEGRAÇÃO DEFINITIVA */
+        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwyzgzd4wPMOSnLwLP4CyFB8pUxQ2U75rrfdEoy6UBqMUK_6yjd6Oxf3d8uEEPYXATH/exec"; 
+        
+        let currentUser = {}; 
+
+        // Lista Oficial de Projetos com Links Dinâmicos do Google Drive
+        const projetosEletromidia = [
+            { id: 1, linkPdf: "https://drive.google.com/open?id=1QD-RQ7bhmymT9wg2C4zrkpSC1GEb7u_n", nome: "Raphaela Melo – Projeto 1: Estudar e melhorar o processo de recrutamento, seleção, contratação de pessoal e retenção de talentos (SP)." },
+            { id: 2, linkPdf: "#", nome: "Luana – Projeto 2: Estudar e melhorar o processo de recrutamento, seleção, contratação de pessoal e retenção de talentos (Regionais)." },
+            { id: 3, linkPdf: "https://drive.google.com/open?id=1VaOG2c69XoTlmeU9iF7y9ZJsriqea3vS", nome: "Rogério Ferreira – Projeto 3: Melhoria do processo de compras (interface com operações)." },
+            { id: 4, linkPdf: "https://drive.google.com/open?id=1cVM3Tp8UpnDA7S5N6RyC9k1iEIc_2j-B", nome: "Sidney Oliveira – Projeto 4: Melhoria do processo de recebimento e distribuição de materiais/produtos (Supply)." },
+            { id: 5, linkPdf: "#", nome: "Pedro Paulo – Projeto 5: Desenvolver um processo efetivo de planejamento, dimensionamento da estrutura e controle dos recursos e equipes, buscando eficiência operacional para suportar o crescimento do negócio." },
+            { id: 6, linkPdf: "https://drive.google.com/open?id=16HKF4tPjeWS2ucXmItjNNJqnttH2nIwP", nome: "Carlos Melo – Projeto 6: Definir, padronizar, digitalizar e automatizar os processos operacionais." },
+            { id: 7, linkPdf: "https://drive.google.com/open?id=1kAXv-4yG4F18pJmpsaQ-iEZbtUZzYq-M", nome: "Fernando Queiroz – Projeto 7: Estudar e melhorar os processos de planejamento para melhorar a eficiência operacional (Concessão)." },
+            { id: 8, linkPdf: "https://drive.google.com/open?id=1DmucAqnu_w3oxkc62mv6dXWfzQf6N9gy", nome: "Iranildo Melo – Projeto 8: Estudar e melhorar os processos de planejamento para melhorar a eficiência operacional (Regionais)." },
+            { id: 9, linkPdf: "https://drive.google.com/open?id=1Pm3wTUFlpvVchC8PQHgvcY_xinue0OBf", nome: "Gerra Guedes – Projeto 9: Organizar processo robusto de desenvolvimento de projetos de engenharia - APQP (Geral)." },
+            { id: 10, linkPdf: "https://drive.google.com/open?id=1eANRSB_502Qrcu_YTT6OjWf0Scj52wiP", nome: "Carlos Prevedel – Projeto 10: Realizar implantações efetivas - Tempo e custo (Concessões)." },
+            { id: 11, linkPdf: "https://drive.google.com/open?id=1VHrU1SDnzFape1KOTrQAt38mbLJxTauk", nome: "Laiana Tamion – Projeto 11: Realizar implantações efetivas - Tempo e custo (Outras verticais - Edifícios, shoppings, aeroportos, clubes, trilhos)." },
+            { id: 12, linkPdf: "https://drive.google.com/open?id=1ntXObZFnMZO-bXCggLbWZQgzKwJ8bfZ7", nome: "Tacito – Projeto 12: Desenvolver, aprovar e controlar de maneira efetiva o processo de CAPEX." },
+            { id: 13, linkPdf: "#", nome: "Luciana Salles – Projeto 13: Desenvolver, aprovar e controlar de maneira efetiva o processo de OPEX." },
+            { id: 14, linkPdf: "https://drive.google.com/open?id=1nitZmr5DdLU_X7_Vwp9eBLKLQbmQVlqu", nome: "Ricardo Luz – Projeto 14: Otimizar o processo de gestão da frota (locadoras)." },
+            { id: 15, linkPdf: "https://drive.google.com/open?id=1K3DkNwHDgOd2qMyAtd1IZVEJNwILAHK2", nome: "Igor Sousa – Projeto 15: Otimizar o processo de gestão da frota (combustível, multas, seguros, etc)." },
+            { id: 16, linkPdf: "https://drive.google.com/open?id=1d1pmqG5SG-es2GDAN6WM8FgAdjfine43", nome: "Matheus Menezes – Projeto 16: Avaliar, melhorar e padronizar o processo de roteirização." },
+            { id: 17, linkPdf: "https://drive.google.com/open?id=1-ccbEWNWBu0t_r8GKAqJjHmFzM82MIT-", nome: "Carisma Paim – Projeto 17: Definir um processo de monitoramento da gestão dos projetos (Flow Leader)." },
+            { id: 18, linkPdf: "https://drive.google.com/open?id=1an2vbjawqxCgKF2TuudmLpuzFw6SrqQZ", nome: "Renata – Projeto 18: Desenvolver sistema documentado de gestão operacional (Parte integral do sistema de gestão de negocio/qualidade)." },
+            { id: 19, linkPdf: "https://drive.google.com/open?id=1SSKRZyjraaJOX6xt1_IwcvebJ0oCiUIN", nome: "Thomas – Projeto 19: Utilizar inteligência de dados IOT HUB para ser mais ágil na tomada de decisões e melhorias de performance." },
+            { id: 20, linkPdf: "https://drive.google.com/open?id=1pJW-qe8K1q2J047f-VBrrZ3FP7txP765", nome: "Nicolas de Libreti – Projeto 20: Utilizar inteligência de dados para ser mais ágil na tomada de decisões e melhorias de performance." },
+            { id: 21, linkPdf: "https://drive.google.com/open?id=1FvnALmxa6Tc6DuL2dtRB0GXQGUJdwCwf", nome: "Mariana Siqueira – Projeto 21: Estabelecer interface efetiva entre Operações e RIG." },
+            { id: 22, linkPdf: "https://drive.google.com/open?id=15J5LBL8_TznL83UmrxvC7FwzhulB3m45", nome: "Mateus Cirilo – Projeto 22: Estabelecer processo efetivo de monitoramento de chamados." },
+            { id: 23, linkPdf: "https://drive.google.com/open?id=1dOSiMR0G4zE5UalM2oNXzHfqUeJJzYjF", nome: "William Pinheiro – Projeto 23: Estudar e simplificar o processo de evidências através de foto e melhorar a efetividade no uso e funcionalidade do sistema Field Service (EFS)." },
+            { id: 24, linkPdf: "https://drive.google.com/open?id=1kQyUv6mLosJ0djMVK-Dwt70Zu0lcjaCh", nome: "Ana Cláudia – Projeto 24: Estudar e melhorar o processo de treinamento, avaliação e desenvolvimento de pessoas." },
+            { id: 25, linkPdf: "#", nome: "Carolina Bergantini – Projeto 25: Estabelecer processo de cadência de responsabilidade para melhoria da performance (Rendição de contas)." },
+            { id: 27, linkPdf: "https://drive.google.com/open?id=1N87d8M6nnYW-1p575eCbAFqIsOIT-yEa", nome: "Francisco Souza – Projeto 27: Avaliar e melhorar programa de manutenção preventiva, melhorando o diagnóstico de falhas (São Paulo)." },
+            { id: 28, linkPdf: "https://drive.google.com/open?id=1jHjo4r0Shmrc-UK42NuRYChYwmssJiVb", nome: "Natalia – Projeto 28: Avaliar e melhorar programa de manutenção preventiva, melhorando o diagnóstico de falhas (Regionais)." },
+            { id: 29, linkPdf: "https://drive.google.com/open?id=1jxKTI94JNvMCX4wnD6xpyUIJ_IuWhVWk", nome: "Bruno Barreto – Projeto 29: Implementar processo ágil e efetivo de manutenção corretiva, melhorando o diagnóstico de falhas." },
+            { id: 30, linkPdf: "#", nome: "Lucas Borges – Projeto 30: Criar e implementar modelo de desenvolvimento de fornecedores para acompanhar o crescimento." },
+            { id: 31, linkPdf: "https://drive.google.com/open?id=120Ffooa1atdMu87fSUahMC23z8kehGpy", nome: "Rodrigo Ventura – Projeto 31: Desenvolver e implementar processo efetivo de gestão de energia elétrica." }
+        ];
+
+        function startApp() {
+            const name = document.getElementById('userName').value.trim();
+            const role = document.getElementById('userRole').value.trim();
+            if (!name || !role) return alert("Por favor, preencha seu nome e cargo.");
+
+            currentUser = { name, role };
+            document.getElementById('screen-login').classList.remove('active');
+            document.getElementById('screen-projects').classList.add('active');
+            
+            populateDropdowns();
+        }
+
+        function populateDropdowns() {
+            const selects = [
+                document.getElementById('rank1'), 
+                document.getElementById('rank2'), 
+                document.getElementById('rank3'),
+                document.getElementById('viewer-select') 
+            ];
+            
+            projetosEletromidia.forEach((projeto) => {
+                const nomeCurto = projeto.nome.length > 55 ? projeto.nome.substring(0, 55) + "..." : projeto.nome;
+                
+                selects.forEach(select => {
+                    const option = document.createElement('option');
+                    option.value = projeto.id;
+                    option.innerText = nomeCurto;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        function updateViewerLink() {
+            const viewerSelect = document.getElementById('viewer-select');
+            const btnViewer = document.getElementById('btn-viewer');
+            const selectedId = viewerSelect.value; 
+
+            if (selectedId) {
+                const projeto = projetosEletromidia.find(p => p.id == selectedId);
+                
+                // Tratamento para projetos sem apresentação
+                if(projeto.linkPdf === "#") {
+                    btnViewer.href = "#";
+                    btnViewer.classList.add('btn-disabled-link');
+                    btnViewer.style.backgroundColor = "";
+                    btnViewer.innerText = "Apresentação Indisponível";
+                } else {
+                    btnViewer.href = projeto.linkPdf;
+                    btnViewer.classList.remove('btn-disabled-link');
+                    btnViewer.style.backgroundColor = "var(--orange)";
+                    btnViewer.style.color = "white";
+                    btnViewer.innerText = "Abrir Apresentação";
+                }
+            } else {
+                btnViewer.href = "#";
+                btnViewer.classList.add('btn-disabled-link');
+                btnViewer.style.backgroundColor = "";
+                btnViewer.innerText = "Escolha um projeto acima";
+            }
+        }
+
+        function validateVotes() {
+            const rank1 = document.getElementById('rank1').value;
+            const rank2 = document.getElementById('rank2').value;
+            const rank3 = document.getElementById('rank3').value;
+            const btnSubmit = document.getElementById('btn-submit');
+            const errorMsg = document.getElementById('error-message');
+
+            const escolhas = [rank1, rank2, rank3].filter(val => val !== "");
+            const temDuplicata = new Set(escolhas).size !== escolhas.length;
+
+            if (temDuplicata) {
+                errorMsg.style.display = "block";
+                btnSubmit.disabled = true;
+                btnSubmit.classList.remove('btn-success');
+                return;
+            } else {
+                errorMsg.style.display = "none";
+            }
+
+            if (rank1 && rank2 && rank3) {
+                btnSubmit.disabled = false;
+                btnSubmit.classList.add('btn-success');
+            } else {
+                btnSubmit.disabled = true;
+                btnSubmit.classList.remove('btn-success');
+            }
+        }
+
+        function submitFinalVotes() {
+            const btnSubmit = document.getElementById('btn-submit');
+            btnSubmit.innerText = "Enviando...";
+            btnSubmit.disabled = true;
+
+            const rank1Id = document.getElementById('rank1').value;
+            const rank2Id = document.getElementById('rank2').value;
+            const rank3Id = document.getElementById('rank3').value;
+
+            // Busca os nomes completos
+            const nomeRank1 = projetosEletromidia.find(p => p.id == rank1Id).nome;
+            const nomeRank2 = projetosEletromidia.find(p => p.id == rank2Id).nome;
+            const nomeRank3 = projetosEletromidia.find(p => p.id == rank3Id).nome;
+
+            const dadosDoVoto = {
+                nome: currentUser.name,
+                cargo: currentUser.role,
+                primeiroLugar: nomeRank1,
+                segundoLugar: nomeRank2,
+                terceiroLugar: nomeRank3
+            };
+
+            // Envia para o Apps Script
+            fetch(GOOGLE_SHEETS_URL, {
+                method: "POST", 
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(dadosDoVoto)
+            }).then(() => {
+                setTimeout(() => {
+                    document.getElementById('screen-thanks').classList.add('active');
+                }, 800);
+            }).catch(error => {
+                alert("Ocorreu um erro ao enviar. Verifique sua conexão e tente novamente.");
+                btnSubmit.innerText = "Enviar Votos";
+                btnSubmit.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
