@@ -1,305 +1,571 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery Walk - Top 3 Projetos</title>
-    <style>
-        /* ================= CSS (Estilos Eletromidia) ================= */
-        :root {
-            --bg-dark: #121212; --bg-card: #242424; --orange: #FF6600; 
-            --text-light: #FFFFFF; --text-gray: #B3B3B3;
-            --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32;
-            --success: #4CAF50; --error: #FF3333;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-light); display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 480px; min-height: 100vh; padding: 20px; padding-bottom: 40px; }
-        
-        h1, h2 { color: var(--orange); margin-bottom: 15px; text-align: center; }
-        p { color: var(--text-gray); margin-bottom: 20px; text-align: center; font-size: 14px; }
-        
-        input[type="text"] { 
-            width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #333; 
-            border-radius: 8px; background-color: #1a1a1a; color: var(--text-light); font-size: 15px; 
-        }
-        input:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 8px rgba(255, 102, 0, 0.3); }
-        
-        select { 
-            width: 100%; padding: 16px; margin-bottom: 15px; 
-            border: 2px solid #333; border-radius: 10px; 
-            background-color: #1a1a1a; color: var(--text-light); 
-            font-size: 15px; cursor: pointer; transition: 0.3s;
-            appearance: none;
-        }
-        select:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 10px rgba(255, 102, 0, 0.2); }
-        
-        .select-wrapper { position: relative; }
-        .select-wrapper::after {
-            content: "▼"; font-size: 12px; color: var(--orange); 
-            position: absolute; right: 18px; top: 50%; transform: translateY(-75%); 
-            pointer-events: none; transition: 0.3s;
-        }
-
-        .btn { width: 100%; padding: 16px; border: none; border-radius: 8px; background-color: var(--orange); color: white; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; text-align: center; display: block; text-decoration: none; }
-        .btn:active { transform: scale(0.98); }
-        .btn:disabled { background-color: #333; color: #666; cursor: not-allowed; }
-        .btn-success { background-color: var(--success); }
-        
-        .btn-disabled-link { pointer-events: none; background-color: #2a2a2a; color: #777; border: 1px solid #333; }
-
-        .screen { display: none; animation: fadeIn 0.4s ease; }
-        .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .panel-section { background-color: var(--bg-card); padding: 25px 20px; border-radius: 12px; border: 1px solid #333; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .podium-label { font-weight: bold; margin-bottom: 8px; display: block; font-size: 14px; }
-        .label-gold { color: var(--gold); }
-        .label-silver { color: var(--silver); }
-        .label-bronze { color: var(--bronze); }
-        
-        .error-msg { color: var(--error); font-size: 13px; text-align: center; margin-bottom: 15px; display: none; font-weight: bold; }
-
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); display: none; justify-content: center; align-items: center; padding: 20px; z-index: 1000; }
-        .modal-overlay.active { display: flex; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111111">
+  <title>Gallery Walk | Projetos A3</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #111111;
+      --surface: #1b1b1b;
+      --surface-2: #242424;
+      --line: #3b3b3b;
+      --text: #ffffff;
+      --muted: #b8b8b8;
+      --orange: #ff6600;
+      --orange-light: #ff8d40;
+      --green: #80dfac;
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: "Segoe UI", Arial, sans-serif; line-height: 1.5; }
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .55; }
+    :focus-visible { outline: 3px solid var(--orange-light); outline-offset: 3px; }
+    .hidden { display: none !important; }
+    .shell { width: min(1180px, 100% - 40px); margin: 0 auto; }
+    .topbar { border-bottom: 1px solid var(--line); background: #151515; }
+    .topbar-inner { min-height: 74px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+    .brand-mark { width: 12px; height: 28px; border-radius: 4px; background: var(--orange); transform: skew(-16deg); }
+    .topbar-note { color: var(--muted); font-size: 13px; }
+    .main { padding: 48px 0 110px; }
+    .eyebrow { margin: 0 0 10px; color: var(--orange-light); text-transform: uppercase; letter-spacing: .16em; font-weight: 800; font-size: 12px; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { font-size: clamp(36px, 5vw, 64px); line-height: 1.05; letter-spacing: -.045em; margin-bottom: 18px; }
+    h2 { font-size: clamp(24px, 3vw, 32px); line-height: 1.15; letter-spacing: -.02em; }
+    h3 { font-size: 18px; line-height: 1.3; }
+    .lead { max-width: 670px; font-size: 17px; color: var(--muted); }
+    .muted { color: var(--muted); }
+    .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+    .login-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr); gap: 44px; align-items: center; min-height: min(670px, calc(100vh - 210px)); }
+    .login-card { padding: 32px; box-shadow: 0 24px 80px #0005; }
+    .field { margin-bottom: 19px; }
+    label { display: block; font-weight: 700; margin-bottom: 8px; }
+    input[type="text"], input[type="search"], textarea { display: block; width: 100%; border: 1px solid #555; border-radius: 11px; background: var(--surface-2); color: var(--text); padding: 13px 15px; min-height: 48px; }
+    input::placeholder, textarea::placeholder { color: #a8a8a8; }
+    textarea { min-height: 135px; resize: vertical; }
+    .btn { border: 1px solid transparent; border-radius: 11px; padding: 13px 19px; min-height: 48px; color: #151515; background: var(--orange); font-weight: 800; transition: transform .15s, background .15s, border-color .15s; }
+    .btn:hover:not(:disabled) { background: var(--orange-light); transform: translateY(-1px); }
+    .btn-secondary { color: var(--text); background: transparent; border-color: #747474; }
+    .btn-secondary:hover:not(:disabled) { background: #2c2c2c; }
+    .btn-quiet { color: var(--muted); background: transparent; border-color: transparent; }
+    .btn-quiet:hover:not(:disabled) { color: var(--text); background: #2c2c2c; }
+    .full { width: 100%; }
+    .login-card .btn { width: 100%; }
+    .small-note { color: var(--muted); font-size: 13px; }
+    .hero-rule { width: 95px; height: 5px; border-radius: 20px; background: var(--orange); margin: 30px 0; }
+    .dashboard-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
+    .dashboard-head h1 { margin-bottom: 8px; font-size: clamp(34px, 4vw, 48px); }
+    .progress-box { min-width: 215px; text-align: right; }
+    .progress-number { font-size: 30px; font-weight: 850; color: var(--orange-light); line-height: 1; }
+    .progress-track { width: 215px; height: 7px; background: #363636; border-radius: 20px; overflow: hidden; margin: 11px 0 5px auto; }
+    .progress-fill { height: 100%; width: 0; background: var(--orange); transition: width .25s; }
+    .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
+    .search-wrap { flex: 1; }
+    .search-wrap label { font-size: 13px; margin-bottom: 6px; color: var(--muted); }
+    .result-count { color: var(--muted); font-size: 13px; margin: 5px 0 16px; }
+    .projects-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .project-card { text-align: left; width: 100%; display: flex; flex-direction: column; gap: 13px; color: var(--text); padding: 21px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); min-height: 270px; transition: border-color .15s, transform .15s, background .15s; }
+    .project-card:hover { border-color: var(--orange); background: #212121; transform: translateY(-2px); }
+    .project-card.voted { border-color: #38684e; }
+    .card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .project-id { color: var(--orange-light); font-size: 12px; letter-spacing: .11em; font-weight: 850; text-transform: uppercase; }
+    .badge { color: var(--green); border: 1px solid #38684e; background: #183024; border-radius: 50px; padding: 3px 8px; font-size: 11px; font-weight: 800; }
+    .project-card h3 { margin: 0; flex: 1; }
+    .leader { color: var(--muted); font-size: 13px; margin: 0; }
+    .card-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; border-top: 1px solid var(--line); padding-top: 12px; }
+    .card-metric { min-width: 0; }
+    .card-metric small { display: block; color: var(--muted); font-size: 11px; line-height: 1.25; margin-bottom: 3px; }
+    .card-metric strong { font-size: 14px; }
+    .card-action { color: var(--orange-light); font-weight: 800; font-size: 13px; margin-top: 1px; }
+    .sticky-bar { position: fixed; z-index: 5; bottom: 0; left: 0; width: 100%; background: #151515ee; border-top: 1px solid var(--line); backdrop-filter: blur(12px); }
+    .sticky-inner { min-height: 82px; display: flex; justify-content: space-between; align-items: center; gap: 15px; }
+    .sticky-inner p { margin: 0; color: var(--muted); font-size: 14px; }
+    .overlay { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; padding: 20px; background: #000c; }
+    .dialog { width: min(760px, 100%); max-height: min(90dvh, 900px); overflow: auto; padding: 26px; background: #191919; border: 1px solid #575757; border-radius: 22px; box-shadow: 0 25px 100px #000b; }
+    .dialog-top { display: flex; align-items: start; justify-content: space-between; gap: 18px; border-bottom: 1px solid var(--line); padding-bottom: 17px; margin-bottom: 20px; }
+    .dialog-top h2 { margin: 0 0 5px; }
+    .icon-btn { width: 38px; height: 38px; flex: 0 0 auto; display: grid; place-items: center; background: #303030; color: var(--text); border: 1px solid #666; border-radius: 10px; font-size: 23px; line-height: 1; }
+    .step-label { color: var(--orange-light); font-size: 12px; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; margin: 0 0 12px; }
+    .dialog-lead { color: var(--muted); font-size: 14px; }
+    .metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 18px 0; }
+    .metric-tile { border: 1px solid var(--line); border-radius: 13px; padding: 16px; background: var(--surface-2); min-height: 98px; }
+    .metric-tile small { display: block; color: var(--muted); font-size: 12px; margin-bottom: 9px; }
+    .metric-tile strong { display: block; font-size: clamp(18px, 3vw, 25px); line-height: 1.15; }
+    .metric-tile.accent strong { color: var(--orange-light); }
+    .source-note { border-left: 3px solid var(--orange); padding: 10px 13px; color: var(--muted); background: #27211c; border-radius: 0 9px 9px 0; font-size: 13px; }
+    .presentation-link { display: inline-flex; align-items: center; justify-content: center; width: 100%; text-decoration: none; margin-top: 15px; }
+    .question-title { font-size: clamp(21px, 3vw, 28px); margin-bottom: 8px; }
+    .options { display: grid; gap: 9px; margin: 20px 0; }
+    .option { display: flex; align-items: flex-start; gap: 12px; padding: 14px; border: 1px solid #555; background: var(--surface-2); border-radius: 12px; cursor: pointer; }
+    .option:hover { border-color: var(--orange); }
+    .option.selected { border: 2px solid var(--orange); padding: 13px; background: #332115; }
+    .option input { accent-color: var(--orange); margin-top: 5px; flex: 0 0 auto; }
+    .option-score { color: var(--orange-light); font-weight: 850; display: block; white-space: nowrap; }
+    .option-text { color: #f1f1f1; font-size: 14px; }
+    .review { display: grid; gap: 8px; margin: 16px 0; }
+    .review-row { display: flex; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--line); padding-bottom: 8px; font-size: 14px; }
+    .review-row span { color: var(--muted); }
+    .review-row strong { text-align: right; }
+    .dialog-actions { display: flex; justify-content: flex-end; gap: 9px; border-top: 1px solid var(--line); padding-top: 19px; margin-top: 20px; }
+    .error { background: #421f1d; color: #ffe2dd; border: 1px solid #ad5b4f; padding: 10px 12px; border-radius: 10px; font-size: 13px; margin: 10px 0; }
+    .finish-card { max-width: 630px; margin: 50px auto; padding: 38px; text-align: center; }
+    .finish-icon { display: grid; place-items: center; width: 62px; height: 62px; background: var(--orange); color: #111; font-size: 34px; font-weight: 900; border-radius: 50%; margin: 0 auto 20px; }
+    @media (max-width: 720px) {
+      .shell { width: min(100% - 28px, 560px); }
+      .topbar-inner { min-height: 62px; }
+      .topbar-note { display: none; }
+      .main { padding-top: 28px; }
+      .login-layout { grid-template-columns: 1fr; gap: 20px; min-height: auto; }
+      .login-card { padding: 23px; }
+      .dashboard-head { align-items: stretch; flex-direction: column; }
+      .progress-box { text-align: left; }
+      .progress-track { width: 100%; margin-left: 0; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .project-card { min-height: 0; }
+      .sticky-inner { padding: 10px 0; }
+      .sticky-inner .btn { flex: 0 0 auto; }
+      .overlay { padding: 0; place-items: stretch; }
+      .dialog { width: 100%; max-height: 100dvh; min-height: 100dvh; border-radius: 0; border: 0; padding: 20px 16px max(20px, env(safe-area-inset-bottom)); }
+      .dialog-actions { position: sticky; bottom: -20px; background: #191919; padding-bottom: 8px; }
+    }
+    @media (max-width: 410px) {
+      .sticky-inner p { font-size: 12px; }
+      .sticky-inner .btn { padding: 10px 11px; font-size: 13px; }
+      .metric-grid { grid-template-columns: 1fr 1fr; }
+      .metric-tile { padding: 11px; }
+      .metric-tile strong { font-size: 17px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .btn, .project-card, .progress-fill { transition: none; }
+    }
+  </style>
 </head>
 <body>
-
-    <div class="container">
-        <!-- TELA 1: IDENTIFICAÇÃO -->
-        <div id="screen-login" class="screen active">
-            <h1>Gallery Walk</h1>
-            <p>Identifique-se para acessar os projetos e votar.</p>
-            <input type="text" id="userName" placeholder="Seu Nome Completo" required>
-            <input type="text" id="userRole" placeholder="Seu Cargo" required>
-            <button class="btn" onclick="startApp()">Prosseguir</button>
-        </div>
-
-        <!-- TELA 2: VOTAÇÃO E CONSULTA -->
-        <div id="screen-projects" class="screen">
-            <h2>Portal Gallery Walk</h2>
-            <p>Consulte as apresentações e monte seu Pódio.</p>
-
-            <!-- CONSULTA DE APRESENTAÇÕES -->
-            <div class="panel-section">
-                <h3 style="color: var(--text-light); margin-bottom: 15px; font-size: 16px; border-bottom: 1px solid #444; padding-bottom: 10px;">📄 Acessar Apresentações</h3>
-                <div class="select-wrapper">
-                    <select id="viewer-select" onchange="updateViewerLink()">
-                        <option value="">Escolha um projeto da lista...</option>
-                    </select>
-                </div>
-                <a id="btn-viewer" href="#" target="_blank" class="btn btn-disabled-link">Escolha um projeto acima</a>
-            </div>
-            
-            <!-- PAINEL DE VOTAÇÃO (PÓDIO) -->
-            <div class="panel-section">
-                <h3 style="color: var(--text-light); margin-bottom: 15px; font-size: 16px; border-bottom: 1px solid #444; padding-bottom: 10px;">🏆 Seu Top 3</h3>
-                
-                <label class="podium-label label-gold">🥇 1º Lugar</label>
-                <div class="select-wrapper">
-                    <select id="rank1" onchange="validateVotes()">
-                        <option value="">Selecione o melhor projeto...</option>
-                    </select>
-                </div>
-
-                <label class="podium-label label-silver">🥈 2º Lugar</label>
-                <div class="select-wrapper">
-                    <select id="rank2" onchange="validateVotes()">
-                        <option value="">Selecione o segundo projeto...</option>
-                    </select>
-                </div>
-
-                <label class="podium-label label-bronze">🥉 3º Lugar</label>
-                <div class="select-wrapper">
-                    <select id="rank3" onchange="validateVotes()">
-                        <option value="">Selecione o terceiro projeto...</option>
-                    </select>
-                </div>
-
-                <div id="error-message" class="error-msg">⚠️ Você escolheu o mesmo projeto mais de uma vez.</div>
-                
-                <button id="btn-submit" class="btn" disabled onclick="submitFinalVotes()" style="margin-top: 10px;">Enviar Votos</button>
-            </div>
-        </div>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand"><span class="brand-mark" aria-hidden="true"></span><span>Eletromídia <span class="muted">/ Gallery Walk</span></span></div>
+      <span class="topbar-note">Avaliação dos projetos de melhoria contínua</span>
     </div>
+  </header>
 
-    <!-- TELA FINAL -->
-    <div id="screen-thanks" class="modal-overlay">
-        <div style="text-align: center; padding: 20px;">
-            <h1 style="color: var(--success); font-size: 50px; margin-bottom: 10px;">✔</h1>
-            <h2 style="color: white;">Votos Computados!</h2>
-            <p>Seu Top 3 foi enviado com sucesso.</p>
-        </div>
+  <main class="shell main">
+    <section id="screen-login" class="login-layout">
+      <div>
+        <p class="eyebrow">Projetos A3 · Gallery Walk</p>
+        <h1>Registre sua avaliação.</h1>
+        <p class="lead">Conheça os resultados já apurados de cada projeto e avalie sua relevância e a aplicação da metodologia de melhoria contínua.</p>
+        <div class="hero-rule"></div>
+      </div>
+      <form id="login-form" class="panel login-card">
+        <h2>Antes de começar</h2>
+        <p class="muted">Identifique-se para registrar suas avaliações.</p>
+        <div class="field"><label for="user-name">Nome completo</label><input id="user-name" type="text" autocomplete="name" placeholder="Digite seu nome" maxlength="120" required></div>
+        <div class="field"><label for="user-role">Cargo</label><input id="user-role" type="text" autocomplete="organization-title" placeholder="Digite seu cargo" maxlength="120" required></div>
+        <button class="btn" type="submit">Ver projetos <span aria-hidden="true">→</span></button>
+      </form>
+    </section>
+
+    <section id="screen-projects" class="hidden" aria-labelledby="projects-heading">
+      <div class="dashboard-head">
+        <div><p class="eyebrow">Gallery Walk · Projetos A3</p><h1 id="projects-heading">Escolha um projeto</h1><p class="muted" id="greeting"></p></div>
+        <div class="progress-box" aria-live="polite"><div class="progress-number" id="progress-number">0 / 30</div><div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div><small class="muted">projetos avaliados neste navegador</small></div>
+      </div>
+      <div class="toolbar"><div class="search-wrap"><label for="project-search">Buscar por projeto, número ou líder</label><input id="project-search" type="search" placeholder="Ex.: manutenção, projeto 12, Mariana"></div></div>
+      <p id="result-count" class="result-count"></p>
+      <div id="projects-grid" class="projects-grid"></div>
+    </section>
+
+    <section id="screen-finish" class="hidden">
+      <div class="panel finish-card"><span class="finish-icon" aria-hidden="true">✓</span><p class="eyebrow">Participação encerrada</p><h2>Obrigado pela participação!</h2><p id="finish-message" class="muted"></p><button id="switch-user" class="btn btn-secondary" type="button">Trocar participante</button></div>
+    </section>
+  </main>
+
+  <div id="sticky-bar" class="sticky-bar hidden"><div class="shell sticky-inner"><p id="sticky-status"></p><button class="btn" id="finish-button" type="button">Finalizar participação</button></div></div>
+
+  <div id="vote-overlay" class="overlay hidden" role="presentation">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title" aria-describedby="dialog-project">
+      <div class="dialog-top"><div><p id="dialog-project-number" class="eyebrow"></p><h2 id="dialog-title">Avaliar projeto</h2><p id="dialog-project" class="muted" style="margin: 0;"></p></div><button id="close-dialog" class="icon-btn" type="button" aria-label="Fechar">×</button></div>
+      <p id="step-label" class="step-label"></p>
+      <div id="dialog-body"></div>
+      <p id="dialog-error" class="error hidden" role="alert"></p>
+      <div class="dialog-actions"><button id="back-button" class="btn btn-secondary" type="button">Voltar</button><button id="next-button" class="btn" type="button">Continuar</button></div>
     </div>
+  </div>
 
-    <script>
-        /* URL DE INTEGRAÇÃO DEFINITIVA */
-        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwyzgzd4wPMOSnLwLP4CyFB8pUxQ2U75rrfdEoy6UBqMUK_6yjd6Oxf3d8uEEPYXATH/exec"; 
-        
-        let currentUser = {}; 
+  <div id="finish-overlay" class="overlay hidden" role="presentation">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="finish-dialog-title" style="max-width: 480px; min-height: auto;">
+      <h2 id="finish-dialog-title">Encerrar participação?</h2><p id="finish-dialog-message" class="muted"></p>
+      <div class="dialog-actions"><button id="finish-cancel" class="btn btn-secondary" type="button">Voltar aos projetos</button><button id="finish-confirm" class="btn" type="button">Sim, encerrar</button></div>
+    </div>
+  </div>
 
-        // Lista Oficial de Projetos com Links Dinâmicos do Google Drive
-        const projetosEletromidia = [
-            { id: 1, linkPdf: "https://drive.google.com/open?id=1QD-RQ7bhmymT9wg2C4zrkpSC1GEb7u_n", nome: "Raphaela Melo – Projeto 1: Estudar e melhorar o processo de recrutamento, seleção, contratação de pessoal e retenção de talentos (SP)." },
-            { id: 2, linkPdf: "https://drive.google.com/open?id=1QD-RQ7bhmymT9wg2C4zrkpSC1GEb7u_n", nome: "Luana – Projeto 2: Estudar e melhorar o processo de recrutamento, seleção, contratação de pessoal e retenção de talentos (Regionais)." },
-            { id: 3, linkPdf: "https://drive.google.com/open?id=1VaOG2c69XoTlmeU9iF7y9ZJsriqea3vS", nome: "Rogério Ferreira – Projeto 3: Melhoria do processo de compras (interface com operações)." },
-            { id: 4, linkPdf: "https://drive.google.com/open?id=1cVM3Tp8UpnDA7S5N6RyC9k1iEIc_2j-B", nome: "Sidney Oliveira – Projeto 4: Melhoria do processo de recebimento e distribuição de materiais/produtos (Supply)." },
-            { id: 5, linkPdf: "https://docs.google.com/presentation/d/19f_TxtgmkEXiNXBeL4uz8iKfUVGX2K63/edit?usp=drive_link&ouid=103958622290190816794&rtpof=true&sd=true", nome: "Pedro Paulo – Projeto 5: Desenvolver um processo efetivo de planejamento, dimensionamento da estrutura e controle dos recursos e equipes, buscando eficiência operacional para suportar o crescimento do negócio." },
-            { id: 6, linkPdf: "https://drive.google.com/open?id=16HKF4tPjeWS2ucXmItjNNJqnttH2nIwP", nome: "Carlos Melo – Projeto 6: Definir, padronizar, digitalizar e automatizar os processos operacionais." },
-            { id: 7, linkPdf: "https://drive.google.com/open?id=1kAXv-4yG4F18pJmpsaQ-iEZbtUZzYq-M", nome: "Fernando Queiroz – Projeto 7: Estudar e melhorar os processos de planejamento para melhorar a eficiência operacional (Concessão)." },
-            { id: 8, linkPdf: "https://drive.google.com/open?id=1DmucAqnu_w3oxkc62mv6dXWfzQf6N9gy", nome: "Iranildo Melo – Projeto 8: Estudar e melhorar os processos de planejamento para melhorar a eficiência operacional (Regionais)." },
-            { id: 9, linkPdf: "https://drive.google.com/open?id=1Pm3wTUFlpvVchC8PQHgvcY_xinue0OBf", nome: "Gerra Guedes – Projeto 9: Organizar processo robusto de desenvolvimento de projetos de engenharia - APQP (Geral)." },
-            { id: 10, linkPdf: "https://drive.google.com/open?id=1eANRSB_502Qrcu_YTT6OjWf0Scj52wiP", nome: "Carlos Prevedel – Projeto 10: Realizar implantações efetivas - Tempo e custo (Concessões)." },
-            { id: 11, linkPdf: "https://drive.google.com/open?id=1VHrU1SDnzFape1KOTrQAt38mbLJxTauk", nome: "Laiana Tamion – Projeto 11: Realizar implantações efetivas - Tempo e custo (Outras verticais - Edifícios, shoppings, aeroportos, clubes, trilhos)." },
-            { id: 12, linkPdf: "https://drive.google.com/open?id=1ntXObZFnMZO-bXCggLbWZQgzKwJ8bfZ7", nome: "Tacito – Projeto 12: Desenvolver, aprovar e controlar de maneira efetiva o processo de CAPEX." },
-            { id: 13, linkPdf: "#", nome: "Luciana Salles – Projeto 13: Desenvolver, aprovar e controlar de maneira efetiva o processo de OPEX." },
-            { id: 14, linkPdf: "https://drive.google.com/open?id=1nitZmr5DdLU_X7_Vwp9eBLKLQbmQVlqu", nome: "Ricardo Luz – Projeto 14: Otimizar o processo de gestão da frota (locadoras)." },
-            { id: 15, linkPdf: "https://drive.google.com/open?id=1K3DkNwHDgOd2qMyAtd1IZVEJNwILAHK2", nome: "Igor Sousa – Projeto 15: Otimizar o processo de gestão da frota (combustível, multas, seguros, etc)." },
-            { id: 16, linkPdf: "https://drive.google.com/open?id=1d1pmqG5SG-es2GDAN6WM8FgAdjfine43", nome: "Matheus Menezes – Projeto 16: Avaliar, melhorar e padronizar o processo de roteirização." },
-            { id: 17, linkPdf: "https://drive.google.com/open?id=1-ccbEWNWBu0t_r8GKAqJjHmFzM82MIT-", nome: "Carisma Paim – Projeto 17: Definir um processo de monitoramento da gestão dos projetos (Flow Leader)." },
-            { id: 18, linkPdf: "https://drive.google.com/open?id=1an2vbjawqxCgKF2TuudmLpuzFw6SrqQZ", nome: "Renata – Projeto 18: Desenvolver sistema documentado de gestão operacional (Parte integral do sistema de gestão de negocio/qualidade)." },
-            { id: 19, linkPdf: "https://drive.google.com/open?id=1SSKRZyjraaJOX6xt1_IwcvebJ0oCiUIN", nome: "Thomas – Projeto 19: Utilizar inteligência de dados IOT HUB para ser mais ágil na tomada de decisões e melhorias de performance." },
-            { id: 20, linkPdf: "https://drive.google.com/open?id=1pJW-qe8K1q2J047f-VBrrZ3FP7txP765", nome: "Nicolas de Libreti – Projeto 20: Utilizar inteligência de dados para ser mais ágil na tomada de decisões e melhorias de performance." },
-            { id: 21, linkPdf: "https://drive.google.com/open?id=1FvnALmxa6Tc6DuL2dtRB0GXQGUJdwCwf", nome: "Mariana Siqueira – Projeto 21: Estabelecer interface efetiva entre Operações e RIG." },
-            { id: 22, linkPdf: "https://drive.google.com/open?id=15J5LBL8_TznL83UmrxvC7FwzhulB3m45", nome: "Mateus Cirilo – Projeto 22: Estabelecer processo efetivo de monitoramento de chamados." },
-            { id: 23, linkPdf: "https://drive.google.com/open?id=dOSiMR0G4zE5UalM2oNXzHfqUeJJzYjF", nome: "William Pinheiro – Projeto 23: Estudar e simplificar o processo de evidências através de foto e melhorar a efetividade no uso e funcionalidade do sistema Field Service (EFS)." },
-            { id: 24, linkPdf: "https://drive.google.com/open?id=1kQyUv6mLosJ0djMVK-Dwt70Zu0lcjaCh", nome: "Ana Cláudia – Projeto 24: Estudar e melhorar o processo de treinamento, avaliação e desenvolvimento de pessoas." },
-            { id: 25, linkPdf: "https://docs.google.com/presentation/d/1HbTN_FmDxBwvwu9gAjfl_0ciD_PPKpJg/edit?usp=drive_link&ouid=103958622290190816794&rtpof=true&sd=true", nome: "Carolina Bergantini – Projeto 25: Estabelecer processo de cadência de responsabilidade para melhoria da performance (Rendição de contas)." },
-            { id: 27, linkPdf: "https://drive.google.com/open?id=1N87d8M6nnYW-1p575eCbAFqIsOIT-yEa", nome: "Francisco Souza – Projeto 27: Avaliar e melhorar programa de manutenção preventiva, melhorando o diagnóstico de falhas (São Paulo)." },
-            { id: 28, linkPdf: "https://drive.google.com/open?id=1jHjo4r0Shmrc-UK42NuRYChYwmssJiVb", nome: "Natalia – Projeto 28: Avaliar e melhorar programa de manutenção preventiva, melhorando o diagnóstico de falhas (Regionais)." },
-            { id: 29, linkPdf: "https://drive.google.com/open?id=1jxKTI94JNvMCX4wnD6xpyUIJ_IuWhVWk", nome: "Bruno Barreto – Projeto 29: Implementar processo ágil e efetivo de manutenção corretiva, melhorando o diagnóstico de falhas." },
-            { id: 30, linkPdf: "https://docs.google.com/presentation/d/1IhmlsQm5QovsrikgDrndXDudW7vmucNc/edit?usp=drive_link&ouid=103958622290190816794&rtpof=true&sd=true", nome: "Lucas Borges – Projeto 30: Criar e implementar modelo de desenvolvimento de fornecedores para acompanhar o crescimento." },
-            { id: 31, linkPdf: "https://drive.google.com/open?id=120Ffooa1atdMu87fSUahMC23z8kehGpy", nome: "Rodrigo Ventura – Projeto 31: Desenvolver e implementar processo efetivo de gestão de energia elétrica." }
+  <script>
+    "use strict";
+
+    // URL original. A implantação do Apps Script deve continuar aceitando POST em /exec.
+    const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwyzgzd4wPMOSnLwLP4CyFB8pUxQ2U75rrfdEoy6UBqMUK_6yjd6Oxf3d8uEEPYXATH/exec";
+    const STORAGE_PREFIX = "eletromidia-gallery-walk-v2:";
+
+    // Campos: número, líder, título, implementação (%), impacto financeiro,
+    // nota financeira, voto popular. null = dado não informado na base recebida.
+    const projects = [
+      { id: 1, leader: "Raphaela Melo", title: "Estudar e melhorar o processo de recrutamento, seleção, contratação de pessoal e retenção de talentos (SP).", implementation: 73, finance: "Cálculo geral", financeScore: 5, popular: 5 },
+      { id: 2, leader: "Luana", title: "Estudar e melhorar o processo de recrutamento, seleção, contratação de pessoal e retenção de talentos (Regionais).", implementation: 63, finance: "Cálculo geral", financeScore: 5, popular: 2 },
+      { id: 3, leader: "Rogério Ferreira", title: "Melhoria do processo de compras (interface com operações).", implementation: 98, finance: 114118, financeScore: 5, popular: null },
+      { id: 4, leader: "Sidney Oliveira", title: "Melhoria do processo de recebimento e distribuição de materiais/produtos (Supply).", implementation: 66, finance: 41000, financeScore: 1, popular: 1 },
+      { id: 5, leader: "Pedro Paulo", title: "Desenvolver um processo efetivo de planejamento, dimensionamento da estrutura e controle dos recursos e equipes, buscando eficiência operacional para suportar o crescimento do negócio.", implementation: 80, finance: 1258749.18, financeScore: 10, popular: 10 },
+      { id: 6, leader: "Carlos Melo", title: "Definir, padronizar, digitalizar e automatizar os processos operacionais.", implementation: 43, finance: "Cálculo geral", financeScore: 5, popular: 8 },
+      { id: 7, leader: "Fernando Queiroz", title: "Estudar e melhorar os processos de planejamento para melhorar a eficiência operacional (Concessão).", implementation: 83, finance: 116748.58, financeScore: 5, popular: 4 },
+      { id: 8, leader: "Iranildo Melo", title: "Estudar e melhorar os processos de planejamento para melhorar a eficiência operacional (Outras verticais).", implementation: 43, finance: 43757.08, financeScore: 1, popular: 2 },
+      { id: 9, leader: "Gerra Guedes", title: "Organizar processo robusto de desenvolvimento de projetos de engenharia - APQP (Geral).", implementation: 61, finance: 17640907.41, financeScore: 10, popular: 6 },
+      { id: 10, leader: "Carlos Prevedel", title: "Realizar implantações efetivas - Tempo e custo (Concessões).", implementation: 79, finance: 1350414.83, financeScore: 10, popular: 2 },
+      { id: 11, leader: "Laiana Tamion", title: "Realizar implantações efetivas - Tempo e custo (Outras verticais - Edifícios, shoppings, aeroportos, clubes, trilhos).", implementation: 85, finance: 2743919.49, financeScore: 10, popular: 8 },
+      { id: 12, leader: "Tacito", title: "Desenvolver, aprovar e controlar de maneira efetiva o processo de CAPEX.", implementation: 24, finance: 2553271.98, financeScore: 10, popular: 4 },
+      { id: 13, leader: "Luciana Salles", title: "Desenvolver, aprovar e controlar de maneira efetiva o processo de OPEX.", implementation: 30, finance: null, financeScore: 1, popular: null },
+      { id: 14, leader: "Ricardo Luz", title: "Otimizar o processo de gestão da frota (locadoras).", implementation: 49, finance: 328276.80, financeScore: 8, popular: 4 },
+      { id: 15, leader: "Igor Sousa", title: "Otimizar o processo de gestão da frota (combustível, multas, seguros, etc.).", implementation: 50, finance: 190296.14, financeScore: 5, popular: 1 },
+      { id: 16, leader: "Matheus Menezes", title: "Avaliar, melhorar e padronizar o processo de roteirização.", implementation: 51, finance: 46016.16, financeScore: 1, popular: 2 },
+      { id: 17, leader: "Carisma Paim", title: "Definir um processo de monitoramento da gestão dos projetos (Flow Leader).", implementation: 65, finance: 81914.18, financeScore: 3, popular: null },
+      { id: 18, leader: "Renata Paulino", title: "Desenvolver sistema documentado de gestão operacional (Parte integral do sistema de gestão de negócio/qualidade).", implementation: 42, finance: "Cálculo geral", financeScore: 5, popular: 2 },
+      { id: 19, leader: "Thomas", title: "Utilizar inteligência de dados IOT HUB para ser mais ágil na tomada de decisões e melhorias de performance.", implementation: 35, finance: null, financeScore: null, popular: 2 },
+      { id: 20, leader: "Nicolas de Libreti", title: "Utilizar inteligência de dados para ser mais ágil na tomada de decisões e melhorias de performance.", implementation: 63, finance: "Cálculo geral", financeScore: 5, popular: 2 },
+      { id: 21, leader: "Mariana Siqueira", title: "Estabelecer interface efetiva entre Operações e RIG.", implementation: 50, finance: 2693091.29, financeScore: 10, popular: 2 },
+      { id: 22, leader: "Mateus Cirilo", title: "Estabelecer processo efetivo de monitoramento de chamados.", implementation: 50, finance: 126295.01, financeScore: 5, popular: 4 },
+      { id: 23, leader: "William Pinheiro", title: "Estudar e simplificar o processo de evidências através de foto e melhorar a efetividade no uso e funcionalidade do sistema Field Service (EFS).", implementation: 67, finance: 54940.15, financeScore: 3, popular: 2 },
+      { id: 24, leader: "Ana Cláudia", title: "Estudar e melhorar o processo de treinamento, avaliação e desenvolvimento de pessoas.", implementation: 88, finance: "Cálculo geral", financeScore: 5, popular: 4 },
+      { id: 25, leader: "Carolina Bergantini", title: "Estabelecer processo de cadência de responsabilidade para melhoria da performance (Rendição de contas).", implementation: 80, finance: "Cálculo geral", financeScore: 5, popular: 5 },
+      { id: 27, leader: "Francisco Souza", title: "Avaliar e melhorar programa de manutenção preventiva, melhorando o diagnóstico de falhas (São Paulo).", implementation: 50, finance: 117565.15, financeScore: 5, popular: null },
+      { id: 28, leader: "Natalia Ribeiro", title: "Avaliar e melhorar programa de manutenção preventiva, melhorando o diagnóstico de falhas (Regionais).", implementation: 76, finance: null, financeScore: 1, popular: 2 },
+      { id: 29, leader: "Bruno Barreto", title: "Implementar processo ágil e efetivo de manutenção corretiva, melhorando o diagnóstico de falhas.", implementation: 50, finance: null, financeScore: 1, popular: null },
+      { id: 30, leader: "Lucas Borges", title: "Criar e implementar modelo de desenvolvimento de fornecedores para acompanhar o crescimento.", implementation: 50, finance: null, financeScore: 1, popular: 6 },
+      { id: 31, leader: "Rodrigo Ventura", title: "Desenvolver e implementar processo efetivo de gestão de energia elétrica.", implementation: 50, finance: null, financeScore: 1, popular: 1 }
+    ];
+
+    // Links da página de apresentações enviada pelo usuário. O projeto 13
+    // aparece lá com "#", ou seja, ainda não há apresentação disponível.
+    const presentationLinks = {
+      1: "https://drive.google.com/open?id=1QD-RQ7bhmymT9wg2C4zrkpSC1GEb7u_n",
+      2: "https://drive.google.com/open?id=1QD-RQ7bhmymT9wg2C4zrkpSC1GEb7u_n",
+      3: "https://drive.google.com/open?id=1VaOG2c69XoTlmeU9iF7y9ZJsriqea3vS",
+      4: "https://drive.google.com/open?id=1cVM3Tp8UpnDA7S5N6RyC9k1iEIc_2j-B",
+      5: "https://docs.google.com/presentation/d/19f_TxtgmkEXiNXBeL4uz8iKfUVGX2K63/edit?usp=drive_link&ouid=103958622290190816794&rtpof=true&sd=true",
+      6: "https://drive.google.com/open?id=16HKF4tPjeWS2ucXmItjNNJqnttH2nIwP",
+      7: "https://drive.google.com/open?id=1kAXv-4yG4F18pJmpsaQ-iEZbtUZzYq-M",
+      8: "https://drive.google.com/open?id=1DmucAqnu_w3oxkc62mv6dXWfzQf6N9gy",
+      9: "https://drive.google.com/open?id=1Pm3wTUFlpvVchC8PQHgvcY_xinue0OBf",
+      10: "https://drive.google.com/open?id=1eANRSB_502Qrcu_YTT6OjWf0Scj52wiP",
+      11: "https://drive.google.com/open?id=1VHrU1SDnzFape1KOTrQAt38mbLJxTauk",
+      12: "https://drive.google.com/open?id=1ntXObZFnMZO-bXCggLbWZQgzKwJ8bfZ7",
+      13: null,
+      14: "https://drive.google.com/open?id=1nitZmr5DdLU_X7_Vwp9eBLKLQbmQVlqu",
+      15: "https://drive.google.com/open?id=1K3DkNwHDgOd2qMyAtd1IZVEJNwILAHK2",
+      16: "https://drive.google.com/open?id=1d1pmqG5SG-es2GDAN6WM8FgAdjfine43",
+      17: "https://drive.google.com/open?id=1-ccbEWNWBu0t_r8GKAqJjHmFzM82MIT-",
+      18: "https://drive.google.com/open?id=1an2vbjawqxCgKF2TuudmLpuzFw6SrqQZ",
+      19: "https://drive.google.com/open?id=1SSKRZyjraaJOX6xt1_IwcvebJ0oCiUIN",
+      20: "https://drive.google.com/open?id=1pJW-qe8K1q2J047f-VBrrZ3FP7txP765",
+      21: "https://drive.google.com/open?id=1FvnALmxa6Tc6DuL2dtRB0GXQGUJdwCwf",
+      22: "https://drive.google.com/open?id=15J5LBL8_TznL83UmrxvC7FwzhulB3m45",
+      23: "https://drive.google.com/open?id=dOSiMR0G4zE5UalM2oNXzHfqUeJJzYjF",
+      24: "https://drive.google.com/open?id=1kQyUv6mLosJ0djMVK-Dwt70Zu0lcjaCh",
+      25: "https://docs.google.com/presentation/d/1HbTN_FmDxBwvwu9gAjfl_0ciD_PPKpJg/edit?usp=drive_link&ouid=103958622290190816794&rtpof=true&sd=true",
+      27: "https://drive.google.com/open?id=1N87d8M6nnYW-1p575eCbAFqIsOIT-yEa",
+      28: "https://drive.google.com/open?id=1jHjo4r0Shmrc-UK42NuRYChYwmssJiVb",
+      29: "https://drive.google.com/open?id=1jxKTI94JNvMCX4wnD6xpyUIJ_IuWhVWk",
+      30: "https://docs.google.com/presentation/d/1IhmlsQm5QovsrikgDrndXDudW7vmucNc/edit?usp=drive_link&ouid=103958622290190816794&rtpof=true&sd=true",
+      31: "https://drive.google.com/open?id=120Ffooa1atdMu87fSUahMC23z8kehGpy"
+    };
+
+    // Mantém o identificador textual usado pelo HTML anterior para não mudar a coluna
+    // "projeto" em integrações existentes que dependem desse texto.
+    const legacyNames = {
+      8: "Iranildo Melo – Projeto 8: Estudar e melhorar os processos de planejamento para melhorar a eficiência operacional (Regionais).",
+      15: "Igor Sousa – Projeto 15: Otimizar o processo de gestão da frota (combustível, multas, seguros, etc).",
+      18: "Renata – Projeto 18: Desenvolver sistema documentado de gestão operacional (Parte integral do sistema de gestão de negocio/qualidade).",
+      28: "Natalia – Projeto 28: Avaliar e melhorar programa de manutenção preventiva, melhorando o diagnóstico de falhas (Regionais).",
+      31: "Rodrigo Ventura – Projeto 31: Desenvolver e implement processo efetivo de gestão de energia elétrica."
+    };
+
+    const criteria = [
+      { key: "relevancia", title: "Relevância para as MCIs", question: "Em que medida este projeto contribui para as MCIs da empresa?", options: [
+        { score: 1, text: "Não há uma contribuição clara para as MCIs." },
+        { score: 5, text: "Contribui para as MCIs, mas não é decisivo para alcançá-las." },
+        { score: 8, text: "Tem contribuição importante para uma ou mais MCIs." },
+        { score: 10, text: "É essencial para alcançar uma ou mais MCIs." }
+      ] },
+      { key: "metodologia", title: "Aplicação da metodologia", question: "Como o projeto aplicou a metodologia e as ferramentas de melhoria contínua?", options: [
+        { score: 1, text: "Não há evidências de aplicação da metodologia." },
+        { score: 5, text: "Aplicou as etapas e ferramentas básicas." },
+        { score: 8, text: "Aplicou bem a metodologia e escolheu ferramentas adequadas." },
+        { score: 10, text: "Aplicou a metodologia de forma completa, consistente e criativa." }
+      ] }
+    ];
+
+    const $ = id => document.getElementById(id);
+    const money = value => value === null ? "Não informado" : typeof value === "string" ? value : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
+    const score = value => value === null ? "Não informado" : String(value);
+    const state = { user: null, project: null, step: 0, answers: { relevancia: null, metodologia: null }, comment: "", voted: new Set(), sending: false };
+    let previousFocus = null;
+
+    function voteStorageKey() {
+      return STORAGE_PREFIX + [state.user.name, state.user.role].map(s => s.trim().toLocaleLowerCase("pt-BR")).join("|");
+    }
+    function readSavedVotes() {
+      try {
+        const ids = JSON.parse(localStorage.getItem(voteStorageKey()) || "[]");
+        return new Set(Array.isArray(ids) ? ids.filter(id => projects.some(p => p.id === id)) : []);
+      } catch { return new Set(); }
+    }
+    function saveVotes() {
+      try { localStorage.setItem(voteStorageKey(), JSON.stringify([...state.voted])); }
+      catch { /* A página continua funcionando se o armazenamento local estiver indisponível. */ }
+    }
+    function legacyProjectName(project) {
+      return legacyNames[project.id] || `${project.leader} – Projeto ${project.id}: ${project.title}`;
+    }
+    function showScreen(id) {
+      ["screen-login", "screen-projects", "screen-finish"].forEach(screen => $(screen).classList.toggle("hidden", screen !== id));
+      $("sticky-bar").classList.toggle("hidden", id !== "screen-projects");
+      window.scrollTo(0, 0);
+    }
+    function updateProgress() {
+      const done = state.voted.size;
+      $("progress-number").textContent = `${done} / ${projects.length}`;
+      $("progress-fill").style.width = `${(done / projects.length) * 100}%`;
+      $("sticky-status").textContent = done === projects.length ? "Todos os projetos avaliados neste navegador." : `${projects.length - done} ${projects.length - done === 1 ? "projeto restante" : "projetos restantes"} para avaliar.`;
+    }
+    function addMetric(parent, label, value) {
+      const wrap = document.createElement("div");
+      wrap.className = "card-metric";
+      const small = document.createElement("small"); small.textContent = label;
+      const strong = document.createElement("strong"); strong.textContent = value;
+      wrap.append(small, strong); parent.append(wrap);
+    }
+    function renderProjects() {
+      const query = $("project-search").value.trim().toLocaleLowerCase("pt-BR");
+      const filtered = projects.filter(p => `${p.id} projeto ${p.id} ${p.leader} ${p.title}`.toLocaleLowerCase("pt-BR").includes(query));
+      const grid = $("projects-grid"); grid.replaceChildren();
+      for (const p of filtered) {
+        const voted = state.voted.has(p.id);
+        const card = document.createElement("button"); card.type = "button";
+        card.className = `project-card${voted ? " voted" : ""}`;
+        card.addEventListener("click", () => openProject(p));
+        const top = document.createElement("div"); top.className = "card-top";
+        const id = document.createElement("span"); id.className = "project-id"; id.textContent = `Projeto ${String(p.id).padStart(2, "0")}`; top.append(id);
+        if (voted) { const badge = document.createElement("span"); badge.className = "badge"; badge.textContent = "Avaliado"; top.append(badge); }
+        const title = document.createElement("h3"); title.textContent = p.title;
+        const leader = document.createElement("p"); leader.className = "leader"; leader.textContent = `Líder: ${p.leader}`;
+        const metrics = document.createElement("div"); metrics.className = "card-metrics";
+        addMetric(metrics, "Impacto financeiro", money(p.finance));
+        addMetric(metrics, "Nota financeira", score(p.financeScore));
+        addMetric(metrics, "Voto popular", score(p.popular));
+        addMetric(metrics, "Implementação", `${p.implementation}%`);
+        const action = document.createElement("span"); action.className = "card-action"; action.textContent = voted ? "Ver dados →" : "Ver dados e avaliar →";
+        card.append(top, title, leader, metrics, action); grid.append(card);
+      }
+      $("result-count").textContent = `${filtered.length} ${filtered.length === 1 ? "projeto encontrado" : "projetos encontrados"}`;
+    }
+    function showError(message) { $("dialog-error").textContent = message; $("dialog-error").classList.remove("hidden"); }
+    function clearError() { $("dialog-error").textContent = ""; $("dialog-error").classList.add("hidden"); }
+    function metricTile(label, value, accent = false) {
+      const tile = document.createElement("div"); tile.className = `metric-tile${accent ? " accent" : ""}`;
+      const small = document.createElement("small"); small.textContent = label;
+      const strong = document.createElement("strong"); strong.textContent = value;
+      tile.append(small, strong); return tile;
+    }
+    function openProject(project) {
+      previousFocus = document.activeElement;
+      state.project = project; state.step = 0; state.answers = { relevancia: null, metodologia: null }; state.comment = "";
+      $("dialog-project-number").textContent = `Projeto ${String(project.id).padStart(2, "0")} · ${project.leader}`;
+      $("dialog-project").textContent = project.title;
+      renderStep(); $("vote-overlay").classList.remove("hidden"); document.body.style.overflow = "hidden"; $("close-dialog").focus();
+    }
+    function closeProject() {
+      if (state.sending) return;
+      $("vote-overlay").classList.add("hidden"); document.body.style.overflow = ""; clearError();
+      if (previousFocus && previousFocus.isConnected) previousFocus.focus();
+      else $("project-search").focus();
+    }
+    function renderStep() {
+      clearError();
+      const body = $("dialog-body"); body.replaceChildren();
+      const p = state.project; const alreadyVoted = state.voted.has(p.id);
+      $("back-button").textContent = state.step === 0 ? "Fechar" : "Voltar";
+      $("next-button").disabled = false;
+      if (state.step === 0) {
+        $("dialog-title").textContent = "Dados do projeto";
+        $("step-label").textContent = "Antes da avaliação";
+        const intro = document.createElement("p"); intro.className = "dialog-lead";
+        intro.textContent = "Confira os dados já apurados. Eles não precisam ser avaliados novamente.";
+        const grid = document.createElement("div"); grid.className = "metric-grid";
+        grid.append(
+          metricTile("Impacto financeiro", money(p.finance)),
+          metricTile("Nota do impacto financeiro", score(p.financeScore), true),
+          metricTile("Nota do voto popular", score(p.popular), true),
+          metricTile("Planos de ação implementados", `${p.implementation}%`)
+        );
+        const note = document.createElement("p"); note.className = "source-note";
+        note.textContent = p.financeScore === null ? "A base recebida não associa uma nota financeira a este projeto. Por isso, o campo aparece como não informado." : "Os dados acima foram fornecidos na base do Gallery Walk. “Não informado” indica ausência de valor para este projeto.";
+        body.append(intro, grid, note);
+        if (presentationLinks[p.id]) {
+          const link = document.createElement("a");
+          link.className = "btn btn-secondary presentation-link";
+          link.href = presentationLinks[p.id];
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = "Abrir apresentação ↗";
+          body.append(link);
+        } else {
+          const unavailable = document.createElement("button");
+          unavailable.type = "button";
+          unavailable.className = "btn btn-secondary presentation-link";
+          unavailable.textContent = "Apresentação indisponível";
+          unavailable.disabled = true;
+          body.append(unavailable);
+        }
+        if (alreadyVoted) { const voted = document.createElement("p"); voted.className = "small-note"; voted.textContent = "Este projeto já foi marcado como avaliado neste navegador."; body.append(voted); }
+        $("next-button").textContent = alreadyVoted ? "Fechar" : "Começar avaliação";
+      } else if (state.step === 1 || state.step === 2) {
+        const criterion = criteria[state.step - 1];
+        $("dialog-title").textContent = criterion.title;
+        $("step-label").textContent = `Critério ${state.step} de 2`;
+        const title = document.createElement("h3"); title.className = "question-title"; title.textContent = criterion.question;
+        const hint = document.createElement("p"); hint.className = "dialog-lead"; hint.textContent = "Selecione a descrição que melhor corresponde ao projeto.";
+        const options = document.createElement("div"); options.className = "options"; options.setAttribute("role", "radiogroup"); options.setAttribute("aria-label", criterion.title);
+        for (const opt of criterion.options) {
+          const label = document.createElement("label"); label.className = `option${state.answers[criterion.key] === opt.score ? " selected" : ""}`;
+          const radio = document.createElement("input"); radio.type = "radio"; radio.name = criterion.key; radio.value = opt.score; radio.checked = state.answers[criterion.key] === opt.score;
+          radio.addEventListener("change", () => { state.answers[criterion.key] = opt.score; options.querySelectorAll(".option").forEach(el => el.classList.toggle("selected", el.contains(radio))); clearError(); });
+          const content = document.createElement("span");
+          const points = document.createElement("span"); points.className = "option-score"; points.textContent = `Nota ${opt.score}`;
+          const description = document.createElement("span"); description.className = "option-text"; description.textContent = opt.text;
+          content.append(points, description); label.append(radio, content); options.append(label);
+        }
+        body.append(title, hint, options);
+        $("next-button").textContent = "Continuar";
+      } else {
+        $("dialog-title").textContent = "Revisar avaliação";
+        $("step-label").textContent = "Última etapa";
+        const heading = document.createElement("h3"); heading.className = "question-title"; heading.textContent = "Tudo certo com suas notas?";
+        const review = document.createElement("div"); review.className = "review";
+        const rows = [
+          ["Relevância", score(state.answers.relevancia)],
+          ["Metodologia", score(state.answers.metodologia)],
+          ["Impacto financeiro · nota apurada", score(p.financeScore)],
+          ["Voto popular · nota apurada", score(p.popular)],
+          ["Implementação · dado apurado", `${p.implementation}%`]
         ];
-
-        function startApp() {
-            const name = document.getElementById('userName').value.trim();
-            const role = document.getElementById('userRole').value.trim();
-            if (!name || !role) return alert("Por favor, preencha seu nome e cargo.");
-
-            currentUser = { name, role };
-            document.getElementById('screen-login').classList.remove('active');
-            document.getElementById('screen-projects').classList.add('active');
-            
-            populateDropdowns();
+        for (const [label, value] of rows) {
+          const row = document.createElement("div"); row.className = "review-row";
+          const left = document.createElement("span"); left.textContent = label;
+          const right = document.createElement("strong"); right.textContent = value;
+          row.append(left, right); review.append(row);
         }
+        const label = document.createElement("label"); label.htmlFor = "feedback-text"; label.textContent = "Comentário (opcional)";
+        const textarea = document.createElement("textarea"); textarea.id = "feedback-text"; textarea.maxLength = 2000; textarea.placeholder = "Pontos fortes, observações ou sugestões de melhoria"; textarea.value = state.comment;
+        textarea.addEventListener("input", () => { state.comment = textarea.value; });
+        body.append(heading, review, label, textarea);
+        $("next-button").textContent = "Enviar avaliação";
+      }
+    }
+    function nextStep() {
+      if (state.sending) return;
+      if (state.step === 0 && state.voted.has(state.project.id)) return closeProject();
+      if (state.step === 1 || state.step === 2) {
+        if (state.answers[criteria[state.step - 1].key] === null) return showError("Selecione uma opção para continuar.");
+      }
+      if (state.step === 3) return submitVote();
+      state.step += 1; renderStep(); $("dialog-body").scrollIntoView({ block: "nearest" });
+    }
+    function previousStep() {
+      if (state.sending) return;
+      if (state.step === 0) return closeProject();
+      state.step -= 1; renderStep();
+    }
+    async function submitVote() {
+      if (state.sending || state.answers.relevancia === null || state.answers.metodologia === null) return;
+      if (!navigator.onLine) return showError("Parece que você está sem conexão. Conecte-se e tente enviar novamente.");
+      const p = state.project;
+      // "notas" conserva os quatro índices do formulário antigo:
+      // 0 relevância, 1 metodologia, 2 execução, 3 resultado financeiro.
+      // O campo de execução sai da avaliação; sua posição fica vazia.
+      // A nota financeira já fornecida ocupa a posição 3. Os demais dados
+      // são enviados também em campos próprios, se o Apps Script os utilizar.
+      const payload = {
+        nome: state.user.name,
+        cargo: state.user.role,
+        projeto: legacyProjectName(p),
+        notas: [state.answers.relevancia, state.answers.metodologia, "", p.financeScore ?? ""],
+        comentario: state.comment,
+        projetoId: p.id,
+        projetoTitulo: p.title,
+        lider: p.leader,
+        impactoFinanceiro: p.finance,
+        notaImpactoFinanceiro: p.financeScore,
+        notaVotoPopular: p.popular,
+        implementacaoPercentual: p.implementation
+      };
+      state.sending = true; clearError();
+      $("next-button").disabled = true; $("back-button").disabled = true; $("close-dialog").disabled = true;
+      $("next-button").textContent = "Enviando…";
+      try {
+        // text/plain evita preflight CORS. A resposta é opaca no GitHub Pages;
+        // o navegador não consegue confirmar o registro na planilha.
+        await fetch(GOOGLE_SHEETS_URL, { method: "POST", mode: "no-cors", cache: "no-store", headers: { "Content-Type": "text/plain;charset=UTF-8" }, body: JSON.stringify(payload) });
+        state.voted.add(p.id); saveVotes(); updateProgress(); renderProjects();
+        state.sending = false;
+        closeProject();
+        const notice = $("sticky-status");
+        notice.textContent = "Envio solicitado. A confirmação na planilha não é retornada por esta página.";
+      } catch {
+        showError("Não foi possível enviar. Verifique sua conexão e tente novamente.");
+        $("next-button").textContent = "Tentar novamente";
+      } finally {
+        state.sending = false;
+        $("next-button").disabled = false; $("back-button").disabled = false; $("close-dialog").disabled = false;
+      }
+    }
 
-        function populateDropdowns() {
-            const selects = [
-                document.getElementById('rank1'), 
-                document.getElementById('rank2'), 
-                document.getElementById('rank3'),
-                document.getElementById('viewer-select') 
-            ];
-            
-            projetosEletromidia.forEach((projeto) => {
-                const nomeCurto = projeto.nome.length > 55 ? projeto.nome.substring(0, 55) + "..." : projeto.nome;
-                
-                selects.forEach(select => {
-                    const option = document.createElement('option');
-                    option.value = projeto.id;
-                    option.innerText = nomeCurto;
-                    select.appendChild(option);
-                });
-            });
-        }
-
-        function updateViewerLink() {
-            const viewerSelect = document.getElementById('viewer-select');
-            const btnViewer = document.getElementById('btn-viewer');
-            const selectedId = viewerSelect.value; 
-
-            if (selectedId) {
-                const projeto = projetosEletromidia.find(p => p.id == selectedId);
-                
-                // Tratamento para projetos sem apresentação
-                if(projeto.linkPdf === "#") {
-                    btnViewer.href = "#";
-                    btnViewer.classList.add('btn-disabled-link');
-                    btnViewer.style.backgroundColor = "";
-                    btnViewer.innerText = "Apresentação Indisponível";
-                } else {
-                    btnViewer.href = projeto.linkPdf;
-                    btnViewer.classList.remove('btn-disabled-link');
-                    btnViewer.style.backgroundColor = "var(--orange)";
-                    btnViewer.style.color = "white";
-                    btnViewer.innerText = "Abrir Apresentação";
-                }
-            } else {
-                btnViewer.href = "#";
-                btnViewer.classList.add('btn-disabled-link');
-                btnViewer.style.backgroundColor = "";
-                btnViewer.innerText = "Escolha um projeto acima";
-            }
-        }
-
-        function validateVotes() {
-            const rank1 = document.getElementById('rank1').value;
-            const rank2 = document.getElementById('rank2').value;
-            const rank3 = document.getElementById('rank3').value;
-            const btnSubmit = document.getElementById('btn-submit');
-            const errorMsg = document.getElementById('error-message');
-
-            const escolhas = [rank1, rank2, rank3].filter(val => val !== "");
-            const temDuplicata = new Set(escolhas).size !== escolhas.length;
-
-            if (temDuplicata) {
-                errorMsg.style.display = "block";
-                btnSubmit.disabled = true;
-                btnSubmit.classList.remove('btn-success');
-                return;
-            } else {
-                errorMsg.style.display = "none";
-            }
-
-            if (rank1 && rank2 && rank3) {
-                btnSubmit.disabled = false;
-                btnSubmit.classList.add('btn-success');
-            } else {
-                btnSubmit.disabled = true;
-                btnSubmit.classList.remove('btn-success');
-            }
-        }
-
-        function submitFinalVotes() {
-            const btnSubmit = document.getElementById('btn-submit');
-            btnSubmit.innerText = "Enviando...";
-            btnSubmit.disabled = true;
-
-            const rank1Id = document.getElementById('rank1').value;
-            const rank2Id = document.getElementById('rank2').value;
-            const rank3Id = document.getElementById('rank3').value;
-
-            // Busca os nomes completos
-            const nomeRank1 = projetosEletromidia.find(p => p.id == rank1Id).nome;
-            const nomeRank2 = projetosEletromidia.find(p => p.id == rank2Id).nome;
-            const nomeRank3 = projetosEletromidia.find(p => p.id == rank3Id).nome;
-
-            const dadosDoVoto = {
-                nome: currentUser.name,
-                cargo: currentUser.role,
-                primeiroLugar: nomeRank1,
-                segundoLugar: nomeRank2,
-                terceiroLugar: nomeRank3
-            };
-
-            // Envia para o Apps Script
-            fetch(GOOGLE_SHEETS_URL, {
-                method: "POST", 
-                mode: "no-cors",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify(dadosDoVoto)
-            }).then(() => {
-                setTimeout(() => {
-                    document.getElementById('screen-thanks').classList.add('active');
-                }, 800);
-            }).catch(error => {
-                alert("Ocorreu um erro ao enviar. Verifique sua conexão e tente novamente.");
-                btnSubmit.innerText = "Enviar Votos";
-                btnSubmit.disabled = false;
-            });
-        }
-    </script>
+    $("login-form").addEventListener("submit", event => {
+      event.preventDefault();
+      if (!event.currentTarget.reportValidity()) return;
+      state.user = { name: $("user-name").value.trim(), role: $("user-role").value.trim() };
+      if (!state.user.name || !state.user.role) return;
+      state.voted = readSavedVotes();
+      $("greeting").textContent = `${state.user.name}, escolha um projeto para ver os dados e registrar sua avaliação.`;
+      $("project-search").value = ""; updateProgress(); renderProjects(); showScreen("screen-projects");
+    });
+    $("project-search").addEventListener("input", renderProjects);
+    $("close-dialog").addEventListener("click", closeProject);
+    $("back-button").addEventListener("click", previousStep);
+    $("next-button").addEventListener("click", nextStep);
+    $("vote-overlay").addEventListener("click", event => { if (event.target === $("vote-overlay")) closeProject(); });
+    $("finish-button").addEventListener("click", () => {
+      const done = state.voted.size;
+      $("finish-dialog-message").textContent = `Você avaliou ${done} de ${projects.length} projetos neste navegador. Deseja encerrar sua participação agora?`;
+      $("finish-overlay").classList.remove("hidden"); $("finish-cancel").focus();
+    });
+    $("finish-cancel").addEventListener("click", () => $("finish-overlay").classList.add("hidden"));
+    $("finish-confirm").addEventListener("click", () => {
+      $("finish-overlay").classList.add("hidden");
+      $("finish-message").textContent = `Você avaliou ${state.voted.size} de ${projects.length} projetos neste navegador. A página não recebe confirmação de registro da planilha.`;
+      showScreen("screen-finish");
+    });
+    $("switch-user").addEventListener("click", () => {
+      state.user = null; state.voted = new Set(); $("login-form").reset(); showScreen("screen-login"); $("user-name").focus();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Escape") return;
+      if (!$("finish-overlay").classList.contains("hidden")) $("finish-overlay").classList.add("hidden");
+      else if (!$("vote-overlay").classList.contains("hidden")) closeProject();
+    });
+  </script>
 </body>
 </html>
